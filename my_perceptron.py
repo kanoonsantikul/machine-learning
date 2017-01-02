@@ -13,9 +13,7 @@ class Perceptron(object):
             errors = 0
 
             for training_row, target in zip(training_vector, target_value):
-                update = self.learning_rate * (target - self.predict(training_row))
-                self.weight_[1:] += update * training_row
-                self.weight_[0] += update
+                update = self.update_weight(training_row, target)
                 errors += int(update != 0.0)
 
             self.errors_.append(errors)
@@ -27,3 +25,9 @@ class Perceptron(object):
 
     def predict(self, training_row):
         return numpy.where(self.net_input(training_row) >= 0.0, 1, -1)
+
+    def update_weight(self, training_row, target):
+        update = self.learning_rate * (target - self.predict(training_row))
+        self.weight_[1:] += update * training_row
+        self.weight_[0] += update
+        return update
