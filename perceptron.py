@@ -1,63 +1,34 @@
-import numpy as np
+import numpy
+from numpy.random import seed
 
 class Perceptron(object):
-    """Perceptron classifier.
+    def __init__(self, learning_rate, repeat):
+        self.learning_rate = learning_rate
+        self.repeat = repeat
 
-    Parameters
-    ----------
-    eta : float
-        Learning rate (between 0.0 and 1.0)
-    n_iter : int
-        Passes over the training dataset.
-
-    Attributes
-    ----------
-    w_ : Id-array
-        Weights after fitting.
-    errors_ : list
-        Number of misclassifications in every epoch.
-
-    """
-    def __init__(self, eta = 0.01, n_iter = 10):
-        self.eta = eta
-        self.n_iter = n_iter
-
-    def fit(self, X, y):
-        """Fit :training data.
-
-        Parameters
-        ----------
-        X : {array-like}, shape = [n_samples, n_features]
-            Training vectors, where n_samples
-            is the number of samples and
-            n_features is the number of  features
-        y : array-like, shape = [n_samples]
-            Target values.
-
-        Returns
-        -------
-        self : object
-
-        """
-        self.w_ = np.zeros(1 + X.shape[1]) #zeros array [0,0,0]
+    def fit(self, training_vector, target_value):
+        self.weight_ = numpy.zeros(1 + training_vector.shape[1])
         self.errors_ = []
 
-        for _ in range(self.n_iter):
+        for _ in range(self.repeat):
             errors = 0
-            for xi, target in zip(X, y): #zip return [(X,y), (X,y), (X,y),...]
-                update = self.eta * (target - self.predict(xi))
-                self.w_[1:] += update * xi
-                self.w_[0] += update
-                print(self.w_)
+
+            for training_row, target in zip(training_vector, target_value):
+                update = self.update_weight(training_row, target)
                 errors += int(update != 0.0)
+
             self.errors_.append(errors)
 
         return self
 
-    def net_input(self, X):
-        """Calculate net input"""
-        return np.dot(X, self.w_[1:]) + self.w_[0]
+    def net_input(self, training_row):
+        return numpy.dot(training_row, self.weight_[1:]) + self.weight_[0]
 
-    def predict(self, X):
-        """Return class label after unit step"""
-        return np.where(self.net_input(X) >= 0.0, 1, -1)
+    def predict(self, training_row):
+        return numpy.where(self.net_input(training_row) >= 0.0, 1, -1)
+
+    def update_weight(self, training_row, target):
+        update = self.learning_rate * (target - self.predict(training_row))
+        self.weight_[1:] += update * training_row
+        self.weight_[0] += update
+        return update
