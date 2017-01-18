@@ -2,7 +2,9 @@ import pandas
 import numpy
 import matplotlib.pyplot as plt
 
-from learning import Perceptron ,AdalineSGD, AdalineGD
+from perceptron import Perceptron
+from adaline_sgd import AdalineSGD
+from adaline_gd import AdalineGD
 
 def main():
     data_frame = pandas.read_csv('./iris.data', header=None)

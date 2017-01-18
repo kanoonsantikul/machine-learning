@@ -1,3 +1,6 @@
+import numpy
+from numpy.random import seed
+
 class AdalineGD(object):
     def __init__(self, learning_rate, repeat):
         self.learning_rate = learning_rate
